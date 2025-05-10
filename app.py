@@ -136,7 +136,6 @@ def load_recommender():
     try:
         return MovieRecommender()
     except Exception as e:
-        st.info("Processing movie data for the first time. This may take a minute...")
         
         from data_processing import load_and_process_data, compute_similarity_matrix, save_processed_data
         import os
