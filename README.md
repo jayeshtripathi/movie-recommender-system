@@ -4,7 +4,7 @@ A content-based movie recommendation system built with Streamlit that allows use
 
 ## Live Demo
 
-[Movie Recommender System](https://mov-recommender.streamlit.app/)
+[https://mov-recommender.streamlit.app/](https://mov-recommender.streamlit.app/)
 
 
 
@@ -28,7 +28,7 @@ To run this project locally:
 
 ```
 git clone https://github.com/jayeshtripathi/movie-recommender-system.git
-cd movie-recommender
+cd movie-recommender-system
 ```
 
 2. Install dependencies:
