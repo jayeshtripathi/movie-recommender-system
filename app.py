@@ -132,12 +132,40 @@ TMDB_IMAGE_BASE_URL = "https://image.tmdb.org/t/p/w500"
 
 @st.cache_resource
 def load_recommender():
-    """Load the movie recommender model."""
+    """Load the movie recommender model or process data if not found."""
     try:
         return MovieRecommender()
     except Exception as e:
-        st.error(f"Error loading recommender: {e}")
-        return None
+        st.info("Processing movie data for the first time. This may take a minute...")
+        
+        from data_processing import load_and_process_data, compute_similarity_matrix, save_processed_data
+        import os
+        import requests
+        import zipfile
+        
+        data_dir = './data'
+        os.makedirs(data_dir, exist_ok=True)
+        
+        movielens_url = "https://files.grouplens.org/datasets/movielens/ml-latest-small.zip"
+        movielens_zip = os.path.join(data_dir, "ml-latest-small.zip")
+        
+        response = requests.get(movielens_url)
+        with open(movielens_zip, 'wb') as f:
+            f.write(response.content)
+        
+        with zipfile.ZipFile(movielens_zip, 'r') as zip_ref:
+            zip_ref.extractall(data_dir)
+        
+        movies_path = os.path.join(data_dir, "ml-latest-small", "movies.csv")
+        links_path = os.path.join(data_dir, "ml-latest-small", "links.csv")
+        ratings_path = os.path.join(data_dir, "ml-latest-small", "ratings.csv")
+        
+        movies_df = load_and_process_data(movies_path, links_path, ratings_path)
+        similarity_matrix = compute_similarity_matrix(movies_df)
+        save_processed_data(movies_df, similarity_matrix, data_dir)
+    
+        return MovieRecommender()
+
 
 def fetch_poster(tmdb_id, max_retries=3):
     """Fetch movie poster from TMDB API with retry mechanism."""
