@@ -123,7 +123,11 @@ st.markdown("""
 </style>
 """, unsafe_allow_html=True)
 
-TMDB_API_KEY = "your-api-key"  
+try:
+    TMDB_API_KEY = st.secrets["tmdb"]["api_key"]
+except Exception:
+    TMDB_API_KEY = "YOUR_TMDB_API_KEY"  # for local development
+
 TMDB_IMAGE_BASE_URL = "https://image.tmdb.org/t/p/w500"
 
 @st.cache_resource
